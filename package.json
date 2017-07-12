@@ -1,12 +1,12 @@
 {
-  "name": "wk1",
+  "name": "wk02demo",
   "version": "1.0.0",
-  "description": "basic node.js tutorial",
+  "description": "basic node.js and ws setup",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Martina Calluori",
+  "author": "Brendan Luu",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",

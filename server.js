@@ -2,73 +2,89 @@ var WebSocketServer = require("ws").Server;
 var http = require("http");
 var express = require("express");
 
+
+
 //Set root
 var app = express();
 app.use(express.static(__dirname + "/"));
 
-//Set port. Will be set to 5000 on local devicves and  determined by remote host
+
+//Set port. Will be set to 5000 on local and determined by remote host
 var port = process.env.PORT || 5000;
+
+
 
 var server = http.createServer(app);
 server.listen(port);
 
-console.log("http server listen on %d", port);
+console.log("http server listening on %d", port);
 
 var wss = new WebSocketServer({server: server});
-console.log("WebSocket Server was created");
+console.log("websocket server was created");
+
+
+
+
 
 
 var connections = [];
 
-wss.on('connection', function(ws) {
-	connections.push(ws);
+wss.on('connection', function(ws){
+  connections.push(ws);
 
-	console.log('user connected');
+  console.log('user connected');
 
-	ws.on('message', function(m){
+  ws.on('message', function(m){
 
-		var message = JSON.parse(m);
+    var clientMsg = JSON.parse(m);
+    var serverMsg = {};
 
-		if(message.type == 'register') {
+    console.log(clientMsg);
 
-			console.log(message);
-
-			var time = new Date().toJSON();
-
-			connections.forEach(function(connection, index){
-				connection.send(time + ": Someone has logged on");
-				console.log("msg sent to client");
-
-			})
-		}
-	});
+    if(clientMsg.type == 'register'){
 
 
-ws.on('close', function() {
+      var time = new Date().toJSON();
 
-	connections.splice(connections.indexOf(ws), 1);
+      serverMsg.type = clientMsg.type;
+      serverMsg.msg = time + ":someone has logged on"
 
-	var time = new Date().toJSON();
+      connections.forEach(function(connection, index){
+        connection.send(JSON.stringify(serverMsg));
+        console.log("msg sent to client");
+      });
+    } else if (clientMsg.type == 'clicked') {
 
-	connections.forEach(function(connection, index){
-				connection.send(time + ": Someone has logged off");
-				console.log("msg sent to client");
-			});
+      serverMsg.type = clientMsg.type;
+      serverMsg.id = clientMsg.id;
 
-	console.log("user disconnected");
-})
+      connections.forEach(function(connection, index){
+        connection.send(JSON.stringify(serverMsg));
+        console.log("msg sent to client");
+      });
+
+
+    }
+  });
+
+  ws.on('close', function(){
+    connections.splice(connections.indexOf(ws), 1);
+
+    var time = new Date().toJSON();
+
+    var serverMsg = {
+      type: 'logoff',
+      msg: time + ":someone has logged off"
+    }
+
+
+    connections.forEach(function(connection, index){
+      connection.send(JSON.stringify(serverMsg));
+      console.log("msg sent to client");
+    });
+
+    console.log('user disconnected');
+  })
 });
 
-console.log("websocket server is up");
-
-
-
-
-
-
-
-
-
-
-
-
+console.log("WebSocketServer is Up");
