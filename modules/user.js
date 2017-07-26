@@ -5,12 +5,18 @@ function User() {
   this.color = "#"+Math.floor(Math.random()*16777215).toString(16);
   this.mobile = mobilecheck();
 
+  this.x = Math.floor(Math.random()*600);
+  this.y = Math.floor(Math.random()*600);
+  this.size = 40;
+
+
+
     $('.id').html(this.id);
 
   if(this.mobile){
     $('body').attr('data-mobile-user',true);
     $('body').css('background',this.color);
-    
+
   }
 
 }
@@ -19,13 +25,15 @@ function User() {
 User.prototype.register = function(data){
   var time = new Date().toJSON();
   // $('body').append('<p>ID# ' + data.user.id + ' logged on at '+ time +'</p>');
-generateAvatar(data.user);
+addUser(data.user);
 }
 
 User.prototype.logoff = function(data){
-//   var time = new Date().toJSON();
-var selector = '#id-' + data.user.id;
-$(selector).remove();
+  users.forEach(function(user, index){
+    if(user.id == data.user.id){
+      users.splice(index, 1);
+    }
+  });
 }
 
 User.prototype.loadAll = function(data){
@@ -34,7 +42,7 @@ User.prototype.loadAll = function(data){
   var users = data.users;
 
   users.forEach(function(user, index){
-generateAvatar(user);
+addUser(user);
     });
 }
 
@@ -48,9 +56,10 @@ User.prototype.updateColor = function(data){
   $(selector).css('background', data.user.color);
 }
 
-function generateAvatar(user){
+function addUser(user){
   if(user.mobile){
-  $('.display-view').append('<div class="avatar" id="id-' + user.id +'" style="background:' + user.color +';"">' + user.id +'</div>');
+    users.push(user);
+    console.log(users);
   }
 }
 
