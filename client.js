@@ -4,8 +4,6 @@ window.onload = function() {
 
   // var id ;
   var user = new User();
-  $('.id').html(user.id);
-
 
   ws.onopen = function() {
 
@@ -58,9 +56,12 @@ window.onload = function() {
     }
 
     $(document).mouseup(function(){
+      if(user.mobile){
       console.log('clicked');
 
       user.color = user.generateColor();
+      $('body').css('background',user.color);
+
 
       var msg = {
         type:'updateColor',
@@ -69,6 +70,8 @@ window.onload = function() {
       };
 
       ws.send(JSON.stringify(msg));
+
+    }
 
     //   var msg = {
     //     type: 'clicked',

@@ -50,7 +50,7 @@ wss.on('connection', function(ws){
 		if(msg.sendToAll){
 			//Send to all connections
 			users.forEach(function(user, index){
-					if(user.id == msg.id && user != msg.user) {
+					if(user.id == msg.user.id && user != msg.user) {
 						user[index] = msg.user;
 					}
 	      });

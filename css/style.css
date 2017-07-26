@@ -2,3 +2,18 @@
   width: 100px;
   height: 100px;
 }
+
+
+/*display*/
+.user-view{
+  display: none;
+}
+
+/*user*/
+[data-mobile-user="true"] .display-view {
+  display: none;
+}
+
+[data-mobile-user="true"] .user-view {
+  display: block;
+}
